@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Magic Tiles - Select Music</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ff5edf, #8b00ff);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #fff;
+    }
+
+    .albums {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .album {
+      background: #ffffff10;
+      border-radius: 20px;
+      padding: 30px;
+      width: 200px;
+      transition: transform 0.3s ease, background 0.3s;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .album:hover {
+      background: #ffffff20;
+      transform: scale(1.05);
+    }
+
+    .album h2 {
+      font-size: 1.5rem;
+      margin-top: 10px;
+    }
+
+    .album img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    @media(max-width: 500px) {
+      .albums {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🎵 Select Your Music</h1>
+    <div class="albums">
+      <div class="album" onclick="location.href='Tile1.html'">
+        
+        <h2>Resonance</h2>
+      </div>
+      <div class="album" onclick="location.href='Tile2.html'">
+       
+        <h2>Midnight City</h2>
+      </div>
+    </div>
+    
+    
+  </div>
+
+</body>
+</html>

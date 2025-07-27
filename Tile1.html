@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Music Tiles Game</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #a100ff, #ff69b4);
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .score-board {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff;
+      text-align: center;
+      font-size: 22px;
+      padding: 12px 0;
+      z-index: 10;
+      font-weight: bold;
+    }
+
+    .game-container {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      pointer-events: none;
+    }
+
+    .column {
+      flex: 1;
+      border: 1px solid #111;
+      position: relative;
+    }
+
+    .tile {
+      position: absolute;
+      width: 100%;
+      top: -200px;
+      animation: fall 1.7s linear forwards;
+      border-radius: 5px;
+      pointer-events: all;
+      touch-action: manipulation;
+      margin: 2px;
+      cursor: pointer;
+    }
+
+    @keyframes fall {
+      to {
+        top: 100%;
+      }
+    }
+
+    .overlay, .game-over {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .overlay button,
+    .game-over button {
+      padding: 12px 25px;
+      font-size: 18px;
+      margin-top: 20px;
+      background: #8b00ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .game-over h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="score-board" id="scoreBoard">Score: 0 | High Score: 0</div>
+  <div class="game-container" id="gameContainer">
+    <div class="column"></div>
+    <div class="column"></div>
+    <div class="column"></div>
+    <div class="column"></div>
+  </div>
+
+  <div class="overlay" id="startOverlay">
+    <h1>Music Tiles Game</h1>
+    <button onclick="startGame()">Start Game</button>
+  </div>
+
+  <div class="game-over" id="gameOverScreen" style="display: none;">
+    <h2>Game Over!</h2>
+    <p id="finalScore"></p>
+    <button onclick="restartGame()">Restart</button>
+  </div>
+
+  <audio id="music" src="Resonance.mp3"></audio>
+
+  <script>
+    const music = document.getElementById("music");
+    const columns = document.querySelectorAll(".column");
+    const scoreBoard = document.getElementById("scoreBoard");
+    const startOverlay = document.getElementById("startOverlay");
+    const gameOverScreen = document.getElementById("gameOverScreen");
+    const finalScore = document.getElementById("finalScore");
+
+    let score = 0;
+    let highScore = 0;
+    let gameInterval;
+    let scoreInterval;
+    let isGameOver = false;
+    let musicStarted = false;
+
+    function updateScoreBoard() {
+      scoreBoard.innerText = `Score: ${score} | High Score: ${highScore}`;
+    }
+
+    function createTile(colIndex) {
+      const tile = document.createElement("div");
+      tile.classList.add("tile");
+
+      const height = Math.floor(Math.random() * 180) + 180;
+      tile.style.height = `${height}px`;
+
+      const isSpecial = Math.random() < 0.2;
+      if (isSpecial) {
+        tile.style.background = "linear-gradient(to bottom, #d0f0ff, #ffffff)";
+        tile.style.boxShadow = "0 0 12px #b3e8ff";
+      } else {
+        tile.style.background = "#000";
+        tile.style.boxShadow = "0 0 10px #000";
+      }
+
+      tile.addEventListener("click", () => {
+        document.body.style.background = "linear-gradient(to bottom, #a100ff, #ff69b4)";
+        if (!musicStarted) {
+          music.play();
+          musicStarted = true;
+        }
+        tile.remove();
+      });
+
+      setTimeout(() => {
+        if (tile.parentElement && !isGameOver) {
+          gameOver();
+        }
+      }, 1500);
+
+      columns[colIndex].appendChild(tile);
+    }
+
+    function startGame() {
+      startOverlay.style.display = "none";
+      document.getElementById("gameContainer").style.pointerEvents = "auto";
+      score = 0;
+      isGameOver = false;
+      musicStarted = false;
+      updateScoreBoard();
+
+      gameInterval = setInterval(() => {
+        const randomCol = Math.floor(Math.random() * 4);
+        createTile(randomCol);
+      }, 700);
+
+      scoreInterval = setInterval(() => {
+        score += 100;
+        if (score > highScore) highScore = score;
+        updateScoreBoard();
+      }, 1000);
+    }
+
+    function gameOver() {
+      isGameOver = true;
+      clearInterval(gameInterval);
+      clearInterval(scoreInterval);
+      music.pause();
+      music.currentTime = 0;
+      musicStarted = false;
+      finalScore.innerText = `Your Score: ${score} | High Score: ${highScore}`;
+      gameOverScreen.style.display = "flex";
+      columns.forEach(col => col.innerHTML = "");
+    }
+
+    function restartGame() {
+      gameOverScreen.style.display = "none";
+      startGame();
+    }
+  </script>
+</body>
+</html>
